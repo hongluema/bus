@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}
+    用户管理
+{% endblock %}
+{% block content %}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">
+                    {{ message|safe }}
+                    <a href="#" class="close"></a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <div id="index"></div>
+{% endblock %}
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url:'{% url "dashboard" %}',
+            method:"GET",
+            dataType:"text",
+            data:null,
+            success:function(response){
+                $("#index").val(response);
+            },
+            error:function () {
+                alert("服务器出错了！");
+            }
+        })
+    })
+</script>

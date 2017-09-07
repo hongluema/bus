@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}
+登陆页面
+{% endblock %}
+{% block content %}
+    <h1>登陆</h1>
+    {% if form.errors %}
+        <p>您的用户名和密码不匹配，请重新登陆！</p>
+    {% else %}
+        <p>请填写下面的表格登陆</p>
+    {% endif %}
+    <form action="{% url 'login' %}" method="POST" novalidate="novalidate">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="next" value="{{ next }}">
+        <p><input type="submit" value="登陆"></p>
+    </form>
+{% endblock %}

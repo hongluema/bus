@@ -1,0 +1,75 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="/static/echarts.min.js"></script>
+    <script type="text/javascript" src="{% static 'sweetalert-master/dist/sweetalert.min.js' %}" ></script>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <!--为Echarts准备一个具备大小(宽高)的Dom -->
+    <div id="main" style="width: 600px;height: 400px"></div>
+    <script type="text/javascript">
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+{#        app.title = '嵌套环形图';#}
+        // 指定图表的配置项和数据
+        var option = {
+            tooltip: {
+                trigger: 'item', //触发类型。
+                formatter: "{a} <br/>{b}: {c} ({d}%)" // 提示框浮层内容格式器，支持字符串模板和回调函数两种形式。
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data:['豫A 5257','豫A 2287','豫A 5658', '豫A 2069']
+            },
+            series: [
+                {
+                    name:'收入来源',
+                    type:'pie',
+                    selectedMode: 'single',
+                    radius: [0, '30%'], //饼图的半径，第一项是内半径，第二项是外半径
+
+                    label: {
+                        normal: {
+                            position: 'inner'
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data:[
+                        {value:3, name:'净收入', selected:true}, //该数据项是否被选中。
+                        {value:2, name:'其他收入'},
+                        {value:2, name:'油钱'},
+                        {value:3, name:'额外花销'},
+                    ]
+                },
+                {
+                    name:'访问来源',
+                    type:'pie',
+                    radius: ['40%', '55%'],
+
+                    data:[
+                        {value:3, name:'豫A 2287'},
+                        {value:2, name:'豫A 5257'},
+                        {value:3, name:'豫A 5658'},
+                        {value:2, name:'豫A 2069'},
+                    ]
+                }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表
+        myChart.setOption(option);
+
+    </script>
+</body>
+</html>

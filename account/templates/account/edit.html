@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}
+    编辑用户
+{% endblock %}
+{% block content %}
+    <h1>编辑用户</h1>
+    <p>您可以填写下面的表格编辑用户信息,也可以<a href="{% url 'password_change' %}">修改密码</a></p>
+    <form action="." method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{user_form.as_p }}
+        {{profile_form.as_p }}
+        <p><input type="submit" value="保存修改"></p>
+    </form>
+{% endblock %}

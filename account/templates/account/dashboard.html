@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}
+    主页
+{% endblock %}
+
+{% block content %}
+    <h1>车辆管理系统</h1>
+    <p>欢迎使用车辆管理系统</p>
+    <p>您同样可以<a href="{% url 'edit' %}">修改用户信息</a>，<a href="{% url 'password_change' %}">修改密码</a></p>
+{% endblock %}

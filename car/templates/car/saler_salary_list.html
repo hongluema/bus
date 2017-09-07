@@ -1,0 +1,42 @@
+{% extends 'carbase.html' %}
+
+{% block title %}
+售票员薪资信息详细页
+{% endblock %}
+
+{% block nav_salersalary %}
+    class="active"
+{% endblock %}
+
+{% block content %}
+    <h1>售票员薪资信息详细页</h1>
+    <a href="{% url 'car:car_index' %}"><i class="fa fa-university"></i></a>
+        <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr style="background-color: #CAE1FF;">
+                <th>姓名</th>
+                <th>时间</th>
+                <th>应有工资</th>
+                <th>借钱</th>
+                <th>实际工资</th>
+                <th>请假开始日期</th>
+                <th>请假天数</th>
+                <th>请假原因</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for saler in object_list %}
+                <tr>
+                    <td>{{ saler.name.name }}</td>
+                    <td>{{ saler.date |date:'Y-m-d' }}</td>
+                    <td>{{ saler.salary }}</td>
+                    <td>{{ saler.borrow }}</td>
+                    <td>{{ saler.real_salary }}</td>
+                    <td>{{ saler.time|date:'Y-m-d' }}</td>
+                    <td>{{ saler.days }}</td>
+                    <td>{{ saler.reason|slice:":8" }}...</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

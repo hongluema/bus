@@ -1,0 +1,167 @@
+{% extends 'carbase.html' %}
+
+{% block title %}
+车辆信息详细页
+{% endblock %}
+
+{% block nav_car %}
+    class="active"
+{% endblock %}
+
+{% block content %}
+<h1>车辆每日运营信息</h1>
+    <a href="{% url 'car:car_index' %}"><i class="fa fa-university"></i></a>
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr style="background-color: #CAE1FF;">
+                <th>日期</th>
+                <th>名称</th>
+                <th>司机</th>
+                <th>售票员</th>
+                <th>总收入</th>
+                <th>净收入</th>
+                <th>总人数</th>
+                <th>油钱</th>
+                <th>30元票价人数</th>
+                <th>40元票价人数</th>
+                <th>货钱</th>
+                <th>饭钱及其他额外花销</th>
+            </tr>
+        </thead>
+        <tbody>
+                <tr>
+                    <td>{{ car.date }}</td>
+                    <td>豫A {{ car.name }}</td>
+                    <td>{{ car.driver }}</td>
+                    <td>{{ car.saler }}</td>
+                    <td>{{ car.total_income }} 元</td>
+                    <td id="real_income">{{ car.real_income }} 元</td>
+                    <td>{{ car.total_people }} 人</td>
+                    <td id="oil">{{ car.oil }} 元</td>
+                    <td id="people_30">{{ car.people_30 }} 人</td>
+                    <td id="people_40">{{ car.people_40 }} 人</td>
+                    <td id="things">{{ car.things }} 元</td>
+                    <td id="food">{{ car.food }} 元</td>
+                </tr>
+        </tbody>
+    </table>
+
+    <div class="row">
+        <div class="col-md-4" style="margin-top: 100px;">
+        <h1>实际金额填写</h1>
+              <div class="form-group">
+                <label for="id_for_money" class="sr-only col-sm-2 control-label"></label>
+                <div class="col-sm-12">
+                  <input type="text" class="form-control" id="id_for_money" name="money" placeholder="请填写实际金额">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-sm-12">
+                    <br>
+                  <button id="submit" type="submit" class="btn btn-primary btn-block">提交</button>
+                </div>
+              </div>
+
+
+        </div>
+        <div class="col-md-7 col-md-offset-1" style="margin-top: 100px;">
+            <div id="main" style="width: 600px;height: 400px"></div>
+        </div>
+    </div>
+       <br>
+    <div class="row">
+        <!-- 总结信息 -->
+       <div class="col-md-8">
+           <div id="summary">
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    {% csrf_token %}
+    <script>
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+        $(document).ready(function () {
+            var real_income = $('#real_income').text().split('元')[0];
+            $('#submit').click(function () {
+                var money = $('#id_for_money').val();
+                $.ajax({
+                    url:'/car/car_detail_ajax/',
+                    method:"POST",
+                    data:{"real_income":real_income,"money":money},
+                    dataType:"html",
+                    success:function(response){
+                        $('#summary').html(response);
+                    },
+                    error:function () {
+                        alert("请求失败");
+                    }
+                })
+            })
+        })
+
+        {#    echarts 画图#}
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        {#        获取数据;#}
+        var oil = $('#oil').text().split('元')[0];
+        var people30 = $('#people_30').text().split('人')[0]*30;
+        var people40 = $('#people_40').text().split('人')[0]*40;
+        var things = $('#things').text().split('元')[0];
+        var food = $('#food').text().split('元')[0];
+        var income = Number(people30)+Number(people40)+Number(things);
+        var outcome = Number(food)+Number(oil);
+        // 指定图表的配置项和数据
+        var option = {
+            tooltip: {
+                trigger: 'item', //触发类型。
+                formatter: "{a} <br/>{b}: {c} ({d}%)" // 提示框浮层内容格式器，支持字符串模板和回调函数两种形式。
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data:['总收入','总支出','30元票价收入','40元票价收入','货物收入','饭钱及其他花销', '油费支出']
+            },
+            series: [
+                {
+                    name:'收入来源',
+                    type:'pie',
+                    selectedMode: 'single',
+                    radius: [0, '30%'], //饼图的半径，第一项是内半径，第二项是外半径
+
+                    label: {
+                        normal: {
+                            position: 'inner'
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data:[
+                        {value:income, name:'总收入', selected:true}, //该数据项是否被选中。
+                        {value:outcome, name:'总支出'},
+{#                        {value:2, name:'油钱'},#}
+{#                        {value:3, name:'额外花销'},#}
+                    ]
+                },
+                {
+                    name:'访问来源',
+                    type:'pie',
+                    radius: ['40%', '55%'],
+
+                    data:[
+                        {value:people30, name:'30元票价收入'},
+                        {value:people40, name:'40元票价收入'},
+                        {value:things, name:'货物收入'},
+                        {value:oil, name:'油费支出'},
+                        {value:food, name:'饭钱及其他花销'},
+                    ]
+                }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表
+        myChart.setOption(option);
+    </script>
+{% endblock %}

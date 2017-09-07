@@ -1,0 +1,30 @@
+{% extends 'carbase.html' %}
+
+{% block title %}
+售票员信息详细页
+{% endblock %}
+
+{% block nav_saler %}
+    class="active"
+{% endblock %}
+
+{% block content %}
+<h1>售票员信息详细列表</h1>
+    <a href="{% url 'car:car_index' %}"><i class="fa fa-university"></i></a>
+        <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr style="background-color: #CAE1FF;">
+                <th>姓名</th>
+                <th>薪资情况</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for saler in object_list %}
+                <tr>
+                    <td>{{ saler.name }}</td>
+                    <td><a href="{% url 'car:saler_salary' saler.name %}">{{ saler.name }}的薪资详细信息</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
